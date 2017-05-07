@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include "list.c"
 
-using namespace std;
-
 int main() {
     TLSE *l = create();
     int i;
