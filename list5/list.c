@@ -92,7 +92,7 @@ void sort(TLSE *l) {
     }
 }
 
-void inverte(TLSE *l){
+void invert_void(TLSE *l){
     TLSE *aux = create(),*p;
     p=l;
     while(p){
@@ -107,4 +107,19 @@ void inverte(TLSE *l){
     }
     free(aux);
     free(p);
+}
+
+TLSE *invert_list(TLSE *head)
+{
+    TLSE *prev = NULL;
+    TLSE *next;
+
+    while (head) {
+        next = head->prox;
+        head->prox = prev;
+        prev = head;
+        head = next;
+    }
+
+    return prev;
 }
