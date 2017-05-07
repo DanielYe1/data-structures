@@ -1,10 +1,17 @@
 #include <stdio.h>
 #include "list.c"
 
-int main(){
+
+int main() {
 
     TLSE *l = create();
-    ins_ini(l,5);
-    printf("%d",l->info);
-	return 0;
-}   
+    int i;
+    for (i = 0; i < 5; ++i) {
+        l = ins_ini(l, i);
+    }
+    print(l);
+    inverte(l);
+    print(l);
+    clean(l);
+    return 0;
+}
