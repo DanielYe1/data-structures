@@ -92,6 +92,7 @@ void sort(TLSE *l) {
     }
 }
 
+//q1
 void invert_void(TLSE *l){
     TLSE *aux = create(),*p;
     p=l;
@@ -109,6 +110,7 @@ void invert_void(TLSE *l){
     free(p);
 }
 
+// q2
 TLSE *invert_list(TLSE *head)
 {
     TLSE *prev = NULL;
@@ -122,4 +124,32 @@ TLSE *invert_list(TLSE *head)
     }
 
     return prev;
+}
+
+// q3
+TLSE *desloca(TLSE *l, int n) {
+    if (!l) {
+        return l;
+    }
+    TLSE *p = l;
+    int value = 0;
+    if (n % 2 == 0) {
+        value = l->info;
+        p = l->prox;
+        free(l);
+        return ins_final(p, value);
+    } else {
+        TLSE * ant= NULL;
+        while (p->prox!= NULL) {
+            ant = p;
+            p = p->prox;
+        }
+
+        value = p->info;
+        if(ant){
+            ant->prox = NULL;
+            free(p);
+        }
+        return ins_ini(l, value);
+    }
 }

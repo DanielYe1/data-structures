@@ -10,7 +10,8 @@ set(SOURCE_FILES
     #list3/q1.c
     #list4/exAula.c
     #list5/list.c
-    list5/q1.c
-    )
+    #list5/q1.c
+    #list5/q2.c
+        list5/q3.c)
 
 add_executable(data_structures ${SOURCE_FILES})
