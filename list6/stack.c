@@ -1,12 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "node.c"
+#include "node.h"
 
 typedef struct pilha {
     TNO *topo;
 } TPilha;
 
-TPilha *inicializa(void) {
+TPilha *inicia_p(void) {
     TPilha *p = malloc(sizeof(TNO));
     p->topo = NULL;
     return p;
@@ -19,12 +19,12 @@ void push(TPilha *p, int elem) {
     p->topo = novo;
 }
 
-int vazia(TPilha *p) {
+int vazia_p(TPilha *p) {
     return p->topo == NULL;
 }
 
 int pop(TPilha *p) {
-    if (vazia(p)) {
+    if (vazia_p(p)) {
         exit(1);
     }
     TNO *q = p->topo;
@@ -34,7 +34,7 @@ int pop(TPilha *p) {
     return info;
 }
 
-void libera(TPilha *p) {
+void libera_p(TPilha *p) {
     TNO *q = p->topo;
     while(q){
         TNO *t = q;

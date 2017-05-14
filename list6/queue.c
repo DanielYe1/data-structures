@@ -1,16 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "node.c"
+#include "node.h"
 
 typedef struct fila {
     TNO *ini, *fim;
 } TFila;
 
-int vazia(TFila *f) {
+int vazia_f(TFila *f) {
     return f->ini == NULL;
 }
 
-TFila *inicializa(void) {
+TFila *inicia_f(void) {
     TFila *p = malloc(sizeof(TFila));
     p->ini = NULL;
     p->fim = NULL;
@@ -19,12 +19,12 @@ TFila *inicializa(void) {
 
 TFila *insere(TFila *f, int elem) {
     if (!f) {
-        f = inicializa();
+        f = inicia_f();
     }
     TNO *novo = malloc(sizeof(TNO));
     novo->prox = NULL;
     novo->info = elem;
-    if (vazia(f)) {
+    if (vazia_f(f)) {
         f->ini = novo;
     } else {
         f->fim->prox = novo;
@@ -34,7 +34,7 @@ TFila *insere(TFila *f, int elem) {
 }
 
 int retira(TFila *f) {
-    if (vazia(f)) {
+    if (vazia_f(f)) {
         exit(1);
     }
     int info = f->ini->info;
@@ -47,7 +47,7 @@ int retira(TFila *f) {
     return info;
 }
 
-void libera(TFila *f) {
+void libera_f(TFila *f) {
     TNO *p = f->ini;
     while (p) {
         TNO *q = p;
