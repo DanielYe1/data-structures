@@ -56,3 +56,19 @@ void libera_f(TFila *f) {
     }
     free(p);
 }
+
+
+
+# q2.c
+TFila* inv_fila (TFila *f){
+    TPilha *aux = inicia_p();
+    while(!vazia_f(f)){
+        push(aux,retira(f));
+    }
+    TFila *fim = inicia_f();
+    while(!vazia_p(aux)){
+        insere(fim,pop(aux));
+    }
+    libera_p(aux);
+    return fim;
+}
