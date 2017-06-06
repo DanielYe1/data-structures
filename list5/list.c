@@ -111,19 +111,17 @@ void invert_void(TLSE *l){
 }
 
 // q2
-TLSE *invert_list(TLSE *head)
+TLSE *invert_list(TLSE *l)
 {
-    TLSE *prev = NULL;
-    TLSE *next;
-
-    while (head) {
-        next = head->prox;
-        head->prox = prev;
-        prev = head;
-        head = next;
+    TLSE *aux = create(),*p;
+    p=l;
+    while(p){
+        aux = ins_ini(aux,p->info);
+        p=p->prox;
     }
+    free(p);
 
-    return prev;
+    return aux;
 }
 
 // q3

@@ -59,7 +59,6 @@ void libera_f(TFila *f) {
 
 
 
-# q2.c
 TFila* inv_fila (TFila *f){
     TPilha *aux = inicia_p();
     while(!vazia_f(f)){
