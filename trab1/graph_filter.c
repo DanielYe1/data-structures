@@ -2,8 +2,39 @@
 #include <stdlib.h>
 #include "graph.c"
 
+int checkOrientation(int *values, int total_nodes);
 
+static int visit[1000] = {0};
 
+static void reachR(TG *G, int check) {
+    visit[check] = 1;
+    TNO *p = G->prim;
+    while (p->id_no!=check) {
+        p = p->prox_no;
+    }
+    TViz *viz = p->prim_viz;
+    while(viz){
+	  	if (visit[viz->id_viz] == 0) {
+    	    reachR(G, viz->id_viz);
+    	}
+        viz=viz->prox_viz;
+    }
+
+}
+
+int graphBFS(TG *G, int from, int searched) {
+    for (int i = 0; i < 1000; ++i) {
+        visit[i] = 0;
+    }
+    reachR(G, from);
+    if (visit[searched] == 0) {
+        printf("nao achou");
+        return 0;
+    } else {
+        printf("achou");
+        return 1;
+    }
+}
 
 int main() {
     FILE *arq = fopen("trab1/arquivo.txt", "r");
@@ -25,35 +56,38 @@ int main() {
 
     // inserindo arestas
 
-    int *aux = malloc(sizeof(int)*total_nodes);
+    int *aux = malloc(sizeof(int) * total_nodes);
     int from, to;
     while (fscanf(arq, "%d %d", &from, &to) != EOF) {
-        aux[from-1]+=to;
-        aux[to-1]-=from;
+        aux[from - 1] += to;
+        aux[to - 1] -= from;
         insere_aresta(graph, from, to, 1);
         printf("%d %d\n", from, to);
     }
 
-    for (int k = 0; k < total_nodes; k++) {
-        printf("%d ",aux[k]);
-    }
+    int oriented = checkOrientation(aux, total_nodes);
 
-    int oriented=1;
-    for (int j = 0; j < total_nodes; j++) {
-        if(aux[j]){
-            oriented=0;
-            break;
-        }
-    }
-    if(oriented){
-        printf("aux");
-    }else{
-        printf("nao aux");
-    }
+    graphBFS(graph,1,5);
+
     fclose(arq);
 
 
     free(aux);
 
     return 0;
+}
+
+int checkOrientation(int *values, int total_nodes) {
+    int oriented = 1;
+    for (int j = 0; j < total_nodes; j++) {
+        if (values[j]) {
+            oriented = 0;
+            break;
+        }
+    }
+    if (oriented) {
+        printf("orientado\n");
+    } else {
+        printf("nao orientado\n");
+    }
 }
