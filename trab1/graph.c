@@ -132,23 +132,145 @@ void retira_no(TG *g, int id) {
 }
 
 
-void libera(TG *g){
+void libera(TG *g) {
     TNO *p = g->prim;
-    while(p){
+    while (p) {
         TViz *v = p->prim_viz;
-        while (v){
+        while (v) {
             TViz *t = v;
-            v=v->prox_viz;
+            v = v->prox_viz;
             free(t);
         }
 
-        TNO *q=p;
-        p=p->prox_no;
+        TNO *q = p;
+        p = p->prox_no;
         free(q);
     }
     free(g);
 }
 
+// gamb
+
+int checkOrientation(int *values, int total_nodes) {
+    int oriented = 1;
+    for (int j = 0; j < total_nodes; j++) {
+        if (values[j]) {
+            oriented = 0;
+            break;
+        }
+    }
+    if (oriented) {
+        printf("orientado\n");
+    } else {
+        printf("nao orientado\n");
+    }
+    return oriented;
+}
 
 
+static int visit[1000] = {0};
 
+static void reachR(TG *G, int check) {
+    visit[check] = 1;
+    TNO *p = G->prim;
+    while (p->id_no != check) {
+        p = p->prox_no;
+    }
+    TViz *viz = p->prim_viz;
+    while (viz) {
+        if (visit[viz->id_viz] == 0) {
+            reachR(G, viz->id_viz);
+        }
+        viz = viz->prox_viz;
+    }
+
+}
+
+int graphBFS(TG *G, int from, int searched) {
+    for (int i = 0; i < 1000; ++i) {
+        visit[i] = 0;
+    }
+    reachR(G, from);
+    if (visit[searched] == 0) {
+        return 0;
+    } else {
+        return 1;
+    }
+}
+
+int graphStillConnected(TG *g, int total) {
+    for (int i = 0; i < 1000; ++i) {
+        visit[i] = 0;
+    }
+    reachR(g, 1);
+    for (int j = 1; j <= total; ++j) {
+        if (visit[j] == 0) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+int checkValidBridge(TG *g, int from, int to, int total) {
+    retira_aresta(g, from, to);
+    retira_aresta(g, to, from);
+
+    int ans = !graphStillConnected(g, total);
+
+    insere_aresta(g, from, to, 1);
+    insere_aresta(g, to, from, 1);
+
+    return ans;
+}
+
+
+// gamb
+
+TViz *copyViz(TViz *viz) {
+    if (!viz) {
+        return;
+    }
+    TViz *novo = NULL;
+    TViz *p = viz;
+    while(p) {
+        TViz *aux = malloc(sizeof(TViz));
+        aux->id_viz = p->id_viz;
+        aux->custo = 1;
+        aux->prox_viz = novo;
+        novo = aux;
+        p=p->prox_viz;
+    }
+    return novo;
+}
+
+void freeViz(TViz *viz){
+    if(!viz){
+        return;
+    }
+
+    while(viz){
+        TViz *prox = viz->prox_viz;
+        free(viz);
+        viz=prox;
+    }
+}
+
+void printBridges(TG *g, int total) {
+    TNO *p = g->prim;
+    int i = 0;
+    while (p) {
+        TViz *viz = copyViz(p->prim_viz);
+        while (viz) {
+            int id_no = p->id_no;
+            int id_viz = viz->id_viz;
+            if (checkValidBridge(g, id_no, id_viz, total)) {
+                printf("bridge %d: %d -> %d\n", i, id_no, id_viz);
+                i++;
+            }
+            viz = viz->prox_viz;
+        }
+        free(viz);
+
+        p = p->prox_no;
+    }
+}
