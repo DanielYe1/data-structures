@@ -1,21 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-
-typedef struct viz {
-    int id_viz;
-    int custo;
-    struct viz *prox_viz;
-} TViz;
-
-typedef struct no {
-    int id_no;
-    TViz *prim_viz;
-    struct no *prox_no;
-} TNO;
-
-typedef struct grafo {
-    TNO *prim;
-} TG;
+#include "graph.h"
 
 TG *cria(void) {
     TG *g = (TG *) malloc(sizeof(TG));
@@ -149,6 +134,10 @@ void libera(TG *g) {
     free(g);
 }
 
+
+static int visit[1000] = {0};
+
+
 // gamb
 
 int checkOrientation(int *values, int total_nodes) {
@@ -167,8 +156,6 @@ int checkOrientation(int *values, int total_nodes) {
     return oriented;
 }
 
-
-static int visit[1000] = {0};
 
 static void reachR(TG *G, int check) {
     visit[check] = 1;
@@ -232,26 +219,26 @@ TViz *copyViz(TViz *viz) {
     }
     TViz *novo = NULL;
     TViz *p = viz;
-    while(p) {
+    while (p) {
         TViz *aux = malloc(sizeof(TViz));
         aux->id_viz = p->id_viz;
         aux->custo = 1;
         aux->prox_viz = novo;
         novo = aux;
-        p=p->prox_viz;
+        p = p->prox_viz;
     }
     return novo;
 }
 
-void freeViz(TViz *viz){
-    if(!viz){
+void freeViz(TViz *viz) {
+    if (!viz) {
         return;
     }
 
-    while(viz){
+    while (viz) {
         TViz *prox = viz->prox_viz;
         free(viz);
-        viz=prox;
+        viz = prox;
     }
 }
 
@@ -272,5 +259,51 @@ void printBridges(TG *g, int total) {
         free(viz);
 
         p = p->prox_no;
+    }
+}
+
+
+// gamb
+static void reachArticulation(TG *G, int check, int tested) {
+    if (check == tested) {
+        return;
+    }
+    visit[check] = 1;
+    TNO *p = G->prim;
+    while (p->id_no != check) {
+        p = p->prox_no;
+    }
+    TViz *viz = p->prim_viz;
+    while (viz) {
+        if (visit[viz->id_viz] == 0) {
+            reachArticulation(G, viz->id_viz, tested);
+        }
+        viz = viz->prox_viz;
+    }
+
+}
+
+int graphStillConnectedForArticulation(TG *g, int total, int tested) {
+    for (int i = 0; i < 1000; ++i) {
+        visit[i] = 0;
+    }
+    if (tested == 1) {
+        reachArticulation(g, 2, tested);
+    } else {
+        reachArticulation(g, 1, tested);
+    }
+    for (int j = 1; j <= total; j++) {
+        if (visit[j] == 0 && j != tested) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+void printArticulations(TG *g, int total) {
+    for (int i = 1; i <= total; i++) {
+        if (!graphStillConnectedForArticulation(g, total, i)) {
+            printf("articulation point: %d\n", i);
+        }
     }
 }

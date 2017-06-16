@@ -35,6 +35,8 @@ int main() {
 
     printBridges(graph,total_nodes);
 
+    printArticulations(graph,total_nodes);
+
     fclose(arq);
     free(aux);
 
