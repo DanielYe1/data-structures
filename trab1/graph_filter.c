@@ -13,8 +13,8 @@ int main() {
     fscanf(arq, "%d", &total_nodes);
     printf("%d\n", total_nodes);
 
-
     TG *graph = cria();
+
     // inserindo nós
     for (int i = total_nodes; i >= 0; i--) {
         insere_no(graph, i + 1);
@@ -31,15 +31,28 @@ int main() {
         printf("%d %d\n", from, to);
     }
 
-    int oriented = checkOrientation(aux, total_nodes);
+    int oriented = !checkOrientation(aux, total_nodes);
+    int connected = graphStillConnected(graph, total_nodes);
 
-    printBridges(graph,total_nodes);
+    if (oriented) {
+        if (connected) {
 
-    printArticulations(graph,total_nodes);
+        } else {
+
+        }
+    } else {
+        if (connected) {
+            printBridges(graph, total_nodes);
+            printArticulations(graph, total_nodes);
+        } else {
+            printClusters(graph, total_nodes);
+        }
+    }
 
     fclose(arq);
     free(aux);
 
     return 0;
 }
+
 

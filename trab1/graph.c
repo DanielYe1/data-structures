@@ -307,3 +307,39 @@ void printArticulations(TG *g, int total) {
         }
     }
 }
+
+
+// gamb
+
+static void reachClusters(TG *G, int check) {
+    printf(" %d", check);
+    visit[check] = 1;
+    TNO *p = G->prim;
+    while (p->id_no != check) {
+        p = p->prox_no;
+    }
+    TViz *viz = p->prim_viz;
+    while (viz) {
+        if (visit[viz->id_viz] == 0) {
+            reachClusters(G, viz->id_viz);
+        }
+        viz = viz->prox_viz;
+    }
+
+}
+
+
+void printClusters(TG *g, int total) {
+    for (int i = 0; i < 1000; ++i) {
+        visit[i] = 0;
+    }
+
+    int count = 1;
+    for (int j = 1; j <= total; ++j) {
+        if (!visit[j]) {
+            printf("cluster %d:", count++);
+            reachClusters(g, j);
+            printf("\n");
+        }
+    }
+}
