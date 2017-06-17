@@ -35,11 +35,7 @@ int main() {
     int connected = graphStillConnected(graph, total_nodes);
 
     if (oriented) {
-        if (connected) {
-
-        } else {
-
-        }
+        // oriented case
     } else {
         if (connected) {
             printBridges(graph, total_nodes);
