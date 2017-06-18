@@ -29,7 +29,6 @@ int main() {
         aux[from-1] += to;
         aux[to-1] -= from;
         insere_aresta(graph, from-1, to-1, 1);
-        printf("%d %d\n", from, to);
     }
 
     int sc[1000];
