@@ -1,6 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "graph.h"
+static int *pre ,*low;
+static int *stack;
+static int cnt;
+static int k,n;
 
 TG *cria(void) {
     TG *g = (TG *) malloc(sizeof(TG));
@@ -141,10 +145,10 @@ static int visit[1000] = {0};
 // gamb
 
 int checkOrientation(int *values, int total_nodes) {
-    int oriented = 1;
+    int oriented = 0;
     for (int j = 0; j < total_nodes; j++) {
         if (values[j]) {
-            oriented = 0;
+            oriented = 1;
             break;
         }
     }
@@ -189,8 +193,8 @@ int graphStillConnected(TG *g, int total) {
     for (int i = 0; i < 1000; ++i) {
         visit[i] = 0;
     }
-    reachR(g, 1);
-    for (int j = 1; j <= total; ++j) {
+    reachR(g, 0);
+    for (int j = 0; j < total; ++j) {
         if (visit[j] == 0) {
             return 0;
         }
@@ -287,12 +291,12 @@ int graphStillConnectedForArticulation(TG *g, int total, int tested) {
     for (int i = 0; i < 1000; ++i) {
         visit[i] = 0;
     }
-    if (tested == 1) {
-        reachArticulation(g, 2, tested);
-    } else {
+    if (tested == 0) {
         reachArticulation(g, 1, tested);
+    } else {
+        reachArticulation(g, 0, tested);
     }
-    for (int j = 1; j <= total; j++) {
+    for (int j = 0; j < total; j++) {
         if (visit[j] == 0 && j != tested) {
             return 0;
         }
@@ -301,7 +305,7 @@ int graphStillConnectedForArticulation(TG *g, int total, int tested) {
 }
 
 void printArticulations(TG *g, int total) {
-    for (int i = 1; i <= total; i++) {
+    for (int i = 0; i < total; i++) {
         if (!graphStillConnectedForArticulation(g, total, i)) {
             printf("articulation point: %d\n", i);
         }
@@ -314,8 +318,8 @@ void printArticulations(TG *g, int total) {
 static void reachClusters(TG *G, int check) {
     printf(" %d", check);
     visit[check] = 1;
-    TNO *p = G->prim;
-    while (p->id_no != check) {
+    TNO* p = G -> prim;
+    while ((p) && p->id_no != check) {
         p = p->prox_no;
     }
     TViz *viz = p->prim_viz;
@@ -335,11 +339,73 @@ void printClusters(TG *g, int total) {
     }
 
     int count = 1;
-    for (int j = 1; j <= total; ++j) {
+    for (int j = 0; j < total; ++j) {
         if (!visit[j]) {
             printf("cluster %d:", count++);
             reachClusters(g, j);
             printf("\n");
         }
+    }
+}
+
+
+int Graphsct(TG* grafo , int sc[],int totalVertices){
+
+    int v;
+    pre = malloc(totalVertices*sizeof(int));
+    low = malloc(totalVertices*sizeof(int));
+    stack = malloc(totalVertices*sizeof(int));
+
+    for(v = 0 ; v < totalVertices ; v++ ){
+        pre[v] = sc[v] = -1;
+    }
+    cnt = k = n = 0;
+
+    for (v = 0 ; v < totalVertices ;v++)
+    {
+        if(pre[v] == -1){
+            pre[v] = v;
+            strongR(grafo,v,sc);
+        }
+    }
+    free(pre);free(low);free(stack);
+    return k;
+}
+
+void strongR(TG* grafo,int v,int sc[]){
+    int w ,u,min;
+    TViz* a;
+    pre[v] = cnt++;
+    min = pre[v];
+    stack[n++] = v;
+    TNO* no = busca_no(grafo,v);
+    for(a = no-> prim_viz; a ; a =a-> prox_viz){
+        w = a->id_viz;
+        if(pre[w] == -1){
+            strongR(grafo,w,sc);
+            if(low[w] < min) min = low[w];
+        }
+        else if(pre[w] < pre[v] && sc[w] == -1){
+            if(pre[w] < min )min = pre[w];
+        }
+    }
+    low[v] = min;
+    if(low[v] == pre[v]){
+        do{
+            u = stack[--n];
+            sc[u] = k;
+        }while(u != v);
+        k++;
+    }
+}
+
+void show_strong_components(TG* grafo,int sc[],int totaldeVertices){
+    int iterator,gambiarra;
+    gambiarra = Graphsct(grafo,sc,totaldeVertices);
+    for(iterator = 0;iterator < gambiarra ;iterator++){
+        for(int dh = 0 ;dh < totaldeVertices ; dh++){
+            if(sc[dh] == iterator) printf("%d ",dh);
+        }
+        printf("\n");
     }
 }

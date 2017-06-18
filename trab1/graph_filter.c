@@ -2,8 +2,9 @@
 #include <stdlib.h>
 #include "graph.c"
 
+
 int main() {
-    FILE *arq = fopen("trab1/arquivo.txt", "r");
+    FILE *arq = fopen("/opt/development/repositories/Data-Structure/13.txt", "r");
     if (!arq) {
         exit(1);
     }
@@ -13,11 +14,11 @@ int main() {
     fscanf(arq, "%d", &total_nodes);
     printf("%d\n", total_nodes);
 
-    TG *graph = cria();
 
+    TG *graph = cria();
     // inserindo nós
-    for (int i = total_nodes; i >= 0; i--) {
-        insere_no(graph, i + 1);
+    for (int i = total_nodes-1; i >= 0; i--) {
+        insere_no(graph, i);
     }
 
     // inserindo arestas
@@ -25,17 +26,19 @@ int main() {
     int *aux = malloc(sizeof(int) * total_nodes);
     int from, to;
     while (fscanf(arq, "%d %d", &from, &to) != EOF) {
-        aux[from - 1] += to;
-        aux[to - 1] -= from;
-        insere_aresta(graph, from, to, 1);
+        aux[from-1] += to;
+        aux[to-1] -= from;
+        insere_aresta(graph, from-1, to-1, 1);
         printf("%d %d\n", from, to);
     }
 
-    int oriented = !checkOrientation(aux, total_nodes);
+    int sc[1000];
+
+    int oriented = checkOrientation(aux, total_nodes);
     int connected = graphStillConnected(graph, total_nodes);
 
     if (oriented) {
-        // oriented case
+        show_strong_components(graph,sc,total_nodes);
     } else {
         if (connected) {
             printBridges(graph, total_nodes);
@@ -44,11 +47,8 @@ int main() {
             printClusters(graph, total_nodes);
         }
     }
-
     fclose(arq);
     free(aux);
 
     return 0;
 }
-
-
