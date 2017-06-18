@@ -4,7 +4,7 @@
 
 
 int main() {
-    FILE *arq = fopen("/opt/development/repositories/Data-Structure/13.txt", "r");
+    FILE *arq = fopen("trab1/arquivo.txt", "r");
     if (!arq) {
         exit(1);
     }

@@ -1,10 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "graph.h"
-static int *pre ,*low;
+
+static int *pre, *low;
 static int *stack;
 static int cnt;
-static int k,n;
+static int k, n;
 
 TG *cria(void) {
     TG *g = (TG *) malloc(sizeof(TG));
@@ -203,6 +204,9 @@ int graphStillConnected(TG *g, int total) {
 }
 
 int checkValidBridge(TG *g, int from, int to, int total) {
+    if (from > to) {
+        return 0;
+    }
     retira_aresta(g, from, to);
     retira_aresta(g, to, from);
 
@@ -248,14 +252,14 @@ void freeViz(TViz *viz) {
 
 void printBridges(TG *g, int total) {
     TNO *p = g->prim;
-    int i = 0;
+    int i = 1;
     while (p) {
         TViz *viz = copyViz(p->prim_viz);
         while (viz) {
             int id_no = p->id_no;
             int id_viz = viz->id_viz;
             if (checkValidBridge(g, id_no, id_viz, total)) {
-                printf("bridge %d: %d -> %d\n", i, id_no, id_viz);
+                printf("bridge %d: %d -> %d\n", i, id_no + 1, id_viz + 1);
                 i++;
             }
             viz = viz->prox_viz;
@@ -307,7 +311,7 @@ int graphStillConnectedForArticulation(TG *g, int total, int tested) {
 void printArticulations(TG *g, int total) {
     for (int i = 0; i < total; i++) {
         if (!graphStillConnectedForArticulation(g, total, i)) {
-            printf("articulation point: %d\n", i);
+            printf("articulation point: %d\n", i + 1);
         }
     }
 }
@@ -318,7 +322,7 @@ void printArticulations(TG *g, int total) {
 static void reachClusters(TG *G, int check) {
     printf(" %d", check);
     visit[check] = 1;
-    TNO* p = G -> prim;
+    TNO *p = G->prim;
     while ((p) && p->id_no != check) {
         p = p->prox_no;
     }
@@ -349,62 +353,62 @@ void printClusters(TG *g, int total) {
 }
 
 
-int Graphsct(TG* grafo , int sc[],int totalVertices){
+int Graphsct(TG *grafo, int sc[], int totalVertices) {
 
     int v;
-    pre = malloc(totalVertices*sizeof(int));
-    low = malloc(totalVertices*sizeof(int));
-    stack = malloc(totalVertices*sizeof(int));
+    pre = malloc(totalVertices * sizeof(int));
+    low = malloc(totalVertices * sizeof(int));
+    stack = malloc(totalVertices * sizeof(int));
 
-    for(v = 0 ; v < totalVertices ; v++ ){
+    for (v = 0; v < totalVertices; v++) {
         pre[v] = sc[v] = -1;
     }
     cnt = k = n = 0;
 
-    for (v = 0 ; v < totalVertices ;v++)
-    {
-        if(pre[v] == -1){
+    for (v = 0; v < totalVertices; v++) {
+        if (pre[v] == -1) {
             pre[v] = v;
-            strongR(grafo,v,sc);
+            strongR(grafo, v, sc);
         }
     }
-    free(pre);free(low);free(stack);
+    free(pre);
+    free(low);
+    free(stack);
     return k;
 }
 
-void strongR(TG* grafo,int v,int sc[]){
-    int w ,u,min;
-    TViz* a;
+void strongR(TG *grafo, int v, int sc[]) {
+    int w, u, min;
+    TViz *a;
     pre[v] = cnt++;
     min = pre[v];
     stack[n++] = v;
-    TNO* no = busca_no(grafo,v);
-    for(a = no-> prim_viz; a ; a =a-> prox_viz){
+    TNO *no = busca_no(grafo, v);
+    for (a = no->prim_viz; a; a = a->prox_viz) {
         w = a->id_viz;
-        if(pre[w] == -1){
-            strongR(grafo,w,sc);
-            if(low[w] < min) min = low[w];
-        }
-        else if(pre[w] < pre[v] && sc[w] == -1){
-            if(pre[w] < min )min = pre[w];
+        if (pre[w] == -1) {
+            strongR(grafo, w, sc);
+            if (low[w] < min) min = low[w];
+        } else if (pre[w] < pre[v] && sc[w] == -1) {
+            if (pre[w] < min)min = pre[w];
         }
     }
     low[v] = min;
-    if(low[v] == pre[v]){
-        do{
+    if (low[v] == pre[v]) {
+        do {
             u = stack[--n];
             sc[u] = k;
-        }while(u != v);
+        } while (u != v);
         k++;
     }
 }
 
-void show_strong_components(TG* grafo,int sc[],int totaldeVertices){
-    int iterator,gambiarra;
-    gambiarra = Graphsct(grafo,sc,totaldeVertices);
-    for(iterator = 0;iterator < gambiarra ;iterator++){
-        for(int dh = 0 ;dh < totaldeVertices ; dh++){
-            if(sc[dh] == iterator) printf("%d ",dh);
+void show_strong_components(TG *grafo, int sc[], int totaldeVertices) {
+    int iterator, gambiarra;
+    gambiarra = Graphsct(grafo, sc, totaldeVertices);
+    for (iterator = 0; iterator < gambiarra; iterator++) {
+        for (int dh = 0; dh < totaldeVertices; dh++) {
+            if (sc[dh] == iterator) printf("%d ", dh);
         }
         printf("\n");
     }
