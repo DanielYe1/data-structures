@@ -71,7 +71,7 @@ int main() {
                 if (busca_aresta(graph, x1, x2)) {
                     aux[x1 - 1] += x2;
                     aux[x2 - 1] -= x1;
-                    insere_aresta(graph, x1, x2, 1);
+                    insere_aresta(graph, x1-1, x2-1, 1);
                 }
                 break;
             case 2:
@@ -80,7 +80,7 @@ int main() {
                 if (busca_aresta(graph, x1, x2)) {
                     aux[x1 - 1] -= x2;
                     aux[x2 - 1] += x1;
-                    retira_aresta(graph, x1, x2);
+                    retira_aresta(graph, x1-1, x2-1);
                 }
                 break;
             case 3:
