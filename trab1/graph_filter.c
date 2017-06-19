@@ -4,7 +4,12 @@
 
 
 int main() {
-    FILE *arq = fopen("trab1/arquivo.txt", "r");
+    int fnSize = 50;
+    printf("Digite nome do arquivo:(max 50 caracteres)\n");
+    char *fname = malloc(sizeof(char) * fnSize);
+    scanf("%s", fname);
+
+    FILE *arq = fopen(fname, "r");
     if (!arq) {
         exit(1);
     }
@@ -55,7 +60,7 @@ int main() {
         printf("\nDigite o que quer fazer agora:\n");
         printf("1-inserir aresta\n2-retirar aresta\n3-buscar aresta\n");
         printf("4-inserir vertice\n5-retirar vertice\n6-buscar vertice\n");
-        printf("Digite qualquer outra coisa pra terminar o programa\n");
+        printf("Digite qualquer outro numero pra terminar o programa\n");
         scanf("%d", &option);
         int x1, x2;
         switch (option) {
@@ -89,7 +94,7 @@ int main() {
                 retira_no(graph, x1);
                 break;
             case 6:
-                printf("Digite o vertice a ser buscado:");
+                printf("Digite o vertice a ser buscado:\n");
                 scanf("%d", &x1);
                 busca_no(graph, x1);
                 break;
