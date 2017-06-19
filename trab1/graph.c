@@ -147,7 +147,8 @@ static int visit[1000] = {0};
 
 int checkOrientation(int *values, int total_nodes) {
     int oriented = 0;
-    for (int j = 0; j < total_nodes; j++) {
+    int j;
+    for (j = 0; j < total_nodes; j++) {
         if (values[j]) {
             oriented = 1;
             break;
@@ -179,7 +180,8 @@ static void reachR(TG *G, int check) {
 }
 
 int graphBFS(TG *G, int from, int searched) {
-    for (int i = 0; i < 1000; ++i) {
+    int i;
+    for (i = 0; i < 1000; ++i) {
         visit[i] = 0;
     }
     reachR(G, from);
@@ -191,11 +193,12 @@ int graphBFS(TG *G, int from, int searched) {
 }
 
 int graphStillConnected(TG *g, int total) {
-    for (int i = 0; i < 1000; ++i) {
+    int i, j;
+    for (i = 0; i < 1000; ++i) {
         visit[i] = 0;
     }
     reachR(g, 0);
-    for (int j = 0; j < total; ++j) {
+    for (j = 0; j < total; ++j) {
         if (visit[j] == 0) {
             return 0;
         }
@@ -255,18 +258,27 @@ void printBridges(TG *g, int total) {
     int i = 1;
     while (p) {
         TViz *viz = copyViz(p->prim_viz);
-        while (viz) {
+        TViz *t = viz;
+        while (t) {
             int id_no = p->id_no;
-            int id_viz = viz->id_viz;
+            int id_viz = t->id_viz;
             if (checkValidBridge(g, id_no, id_viz, total)) {
                 printf("bridge %d: %d -> %d\n", i, id_no + 1, id_viz + 1);
                 i++;
             }
-            viz = viz->prox_viz;
+            t = t->prox_viz;
         }
-        free(viz);
+        liberaVizinho(viz);
 
         p = p->prox_no;
+    }
+}
+
+void liberaVizinho(TViz *viz) {
+    while(viz){
+        TViz *p = viz;
+        viz = viz->prox_viz;
+        free(p);
     }
 }
 
@@ -292,7 +304,8 @@ static void reachArticulation(TG *G, int check, int tested) {
 }
 
 int graphStillConnectedForArticulation(TG *g, int total, int tested) {
-    for (int i = 0; i < 1000; ++i) {
+    int i;
+    for (i = 0; i < 1000; ++i) {
         visit[i] = 0;
     }
     if (tested == 0) {
@@ -309,7 +322,8 @@ int graphStillConnectedForArticulation(TG *g, int total, int tested) {
 }
 
 void printArticulations(TG *g, int total) {
-    for (int i = 0; i < total; i++) {
+    int i;
+    for (i = 0; i < total; i++) {
         if (!graphStillConnectedForArticulation(g, total, i)) {
             printf("articulation point: %d\n", i + 1);
         }
@@ -338,12 +352,13 @@ static void reachClusters(TG *G, int check) {
 
 
 void printClusters(TG *g, int total) {
-    for (int i = 0; i < 1000; ++i) {
+    int i, j;
+    for (i = 0; i < 1000; ++i) {
         visit[i] = 0;
     }
 
     int count = 1;
-    for (int j = 0; j < total; ++j) {
+    for (j = 0; j < total; ++j) {
         if (!visit[j]) {
             printf("cluster %d:", count++);
             reachClusters(g, j);
@@ -404,10 +419,10 @@ void strongR(TG *grafo, int v, int sc[]) {
 }
 
 void show_strong_components(TG *grafo, int sc[], int totaldeVertices) {
-    int iterator, gambiarra;
+    int iterator, gambiarra, dh;
     gambiarra = Graphsct(grafo, sc, totaldeVertices);
     for (iterator = 0; iterator < gambiarra; iterator++) {
-        for (int dh = 1; dh <= totaldeVertices; dh++) {
+        for (dh = 1; dh <= totaldeVertices; dh++) {
             if (sc[dh - 1] == iterator) printf("%d ", dh);
         }
         printf("\n");

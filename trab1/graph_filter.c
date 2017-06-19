@@ -22,7 +22,8 @@ int main() {
 
     TG *graph = cria();
     // inserindo nós
-    for (int i = total_nodes - 1; i >= 0; i--) {
+    int i;
+    for (i = total_nodes - 1; i >= 0; i--) {
         insere_no(graph, i);
     }
 
@@ -67,16 +68,20 @@ int main() {
             case 1:
                 printf("Digite a aresta a ser inserida:\n");
                 scanf("%d %d", &x1, &x2);
-                aux[x1 - 1] += x2;
-                aux[x2 - 1] -= x1;
-                insere_aresta(graph, x1, x2, 1);
+                if (busca_aresta(graph, x1, x2)) {
+                    aux[x1 - 1] += x2;
+                    aux[x2 - 1] -= x1;
+                    insere_aresta(graph, x1, x2, 1);
+                }
                 break;
             case 2:
                 printf("Digite a aresta a ser removida\n");
                 scanf("%d %d", &x1, &x2);
-                aux[x1 - 1] -= x2;
-                aux[x2 - 1] += x1;
-                retira_aresta(graph, x1, x2);
+                if (busca_aresta(graph, x1, x2)) {
+                    aux[x1 - 1] -= x2;
+                    aux[x2 - 1] += x1;
+                    retira_aresta(graph, x1, x2);
+                }
                 break;
             case 3:
                 printf("Digite a aresta a ser buscada:\n");
