@@ -320,7 +320,7 @@ void printArticulations(TG *g, int total) {
 // gamb
 
 static void reachClusters(TG *G, int check) {
-    printf(" %d", check+1);
+    printf(" %d", check + 1);
     visit[check] = 1;
     TNO *p = G->prim;
     while ((p) && p->id_no != check) {
@@ -389,7 +389,7 @@ void strongR(TG *grafo, int v, int sc[]) {
         if (pre[w] == -1) {
             strongR(grafo, w, sc);
             if (low[w] < min) min = low[w];
-        } else if (pre[w] < pre[v] && sc[w] == -1) {
+        } else if (pre[w] < pre[v - 1] && sc[w] == -1) {
             if (pre[w] < min)min = pre[w];
         }
     }
@@ -407,10 +407,8 @@ void show_strong_components(TG *grafo, int sc[], int totaldeVertices) {
     int iterator, gambiarra;
     gambiarra = Graphsct(grafo, sc, totaldeVertices);
     for (iterator = 0; iterator < gambiarra; iterator++) {
-        for (int dh = 0; dh < totaldeVertices; dh++) {
-            if (sc[dh] == iterator){
-                printf("%d ", dh);
-            }
+        for (int dh = 1; dh <= totaldeVertices; dh++) {
+            if (sc[dh - 1] == iterator) printf("%d ", dh);
         }
         printf("\n");
     }
