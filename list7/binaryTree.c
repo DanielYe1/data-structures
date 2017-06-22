@@ -25,3 +25,17 @@ TAB *copia(TAB *a){
     return novo;
 }
 
+TAB *espelho(TAB *a){
+    if(!a){
+        return a;
+    }
+
+    TAB *novo = cria(a->info);
+    if(a->dir){
+        novo->dir= copia(a->esq);
+    }
+    if(a->esq){
+        novo->esq= copia(a->dir);
+    }
+    return novo;
+}
