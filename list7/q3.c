@@ -7,7 +7,11 @@ int main() {
     t->esq = cria(5);
     t->dir->dir = cria(2);
     t->esq->esq = cria(3);
+
     TAB *i = espelho(t);
+
+    libera(t);
+    libera(i);
 
     printf("1\n");
     return 0;

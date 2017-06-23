@@ -52,3 +52,17 @@ int igual(TAB *a, TAB *b){
     }
     return 0;
 }
+
+TAB *retira_impares(TAB *a){
+    if(a->info %2){
+        return retira(a);
+    }
+}
+
+void libera(TAB *a){
+    if(a){
+        libera(a->dir);
+        libera(a->esq);
+        free(a);
+    }
+}

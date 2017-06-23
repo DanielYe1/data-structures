@@ -14,6 +14,9 @@ int main() {
     b->dir->dir = cria(2);
     b->esq->esq = cria(3);
 
+    libera(t);
+    libera(b);
+
 
     printf("%d",igual(t,b));
     return 0;
